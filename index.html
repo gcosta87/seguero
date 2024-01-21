@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@700&display=swap" rel="stylesheet">
+  <style>
+    #speed {
+      margin-top: 10px;
+    }
+
+    #pattern{
+        font-size: 3.5em;
+        padding: 0.2em;
+        border: 4px dotted darkgrey ;
+        font-family: 'Fira Code', monospace;
+        text-decoration: greenyellow underline;
+        white-space: pre;
+        resize: none;
+    }
+
+    *{
+        text-align: center;
+    }
+
+  </style>
+  <title>Kun Legüero - Caja rítmica de folklore argentino</title>
+</head>
+<body>
+    <div id="app">
+        <pre class="pattern-container">
+            <textarea id="pattern" placeholder="A___p_a_P___" cols="12" rows="4" pattern="[aApP_\-]{0,48}" spellcheck="false" >A___p_a_P___</textarea>
+        </pre>
+        <div>
+            <!-- <label for="speed">Velocidad:</label>-->
+            <input type="number" id="speed" min="30" max="220" step="5" value="110" title="Velocidad">
+            <!-- <label for="configu">Configuracion</label>--> 
+            <select title="Configuración">
+                <option value="000">Sin metrica (texto libre)</option>
+                <optgroup label="Métrica 3/4">
+                    <option value="344">3/4 con Corcheas</option>
+                    <option value="348">3/4 con Semicorcheas</option>
+                </optgroup>
+                <optgroup label="Métrica 6/8">
+                    <option value="684">6/8 con Corcheas</option>
+                    <option value="688">6/8 con Semicorcheas</option>
+                </optgroup>
+            </select>
+            <button onclick="startStop()" id="start_button">Vamos!</button>
+        </div>
+    </div>
+  <script>
+    let isPlaying = false;
+    let intervalId = null;
+    let speed = 110;
+    let currentStep = 0;
+    let pattern = '';
+
+    const step_duration = 4;    //1= Negra, 2=Corchea, 4=Semi-corchea
+
+
+    function stop(is_event_origin){
+        var button = document.getElementById('start_button');
+        clearInterval(intervalId);
+        button.textContent= (is_event_origin ? "Comenzar":"Detener");
+        isPlaying = false;
+    }
+
+    function startStop() {
+
+      if (isPlaying) {
+        stop(false);
+      } else {
+        var button = document.getElementById('start_button');
+        button.textContent= (currentStep == 0 ? "Detener" : "Comenzar");
+
+        intervalId = setInterval(playStep, 60000 / (speed * step_duration));        
+        playStep(); // Play the first step immediately
+
+        isPlaying = true;
+
+      }
+    }
+
+    function playStep() {
+      const step = pattern[currentStep];
+      console.log(step);
+      switch(step){
+        case 'A':   playSound('kun-leguero/samples/aro_con_acento.ogg');
+                    break;
+        case 'a':   playSound('kun-leguero/samples/aro_sin_acento.ogg');
+                    break;
+
+        case 'P':   playSound('kun-leguero/samples/parche_con_acento.ogg');
+                    break;
+        case 'p':   playSound('kun-leguero/samples/parche_sin_acento.ogg');
+                    break;
+        default: // Silencio
+      }
+      currentStep = (currentStep + 1) % pattern.length;
+      //render();
+    }
+
+    function playSound(soundFile) {
+      const audio = new Audio(soundFile);
+      audio.play();
+    }
+
+    function processPattern(pattern_value){
+        pattern = pattern_value.replace(/[^AaPp_\-]/g, ''); // Solo permite A, P o "-" y "_"
+    }
+
+    //////////////
+    document.getElementById('speed').addEventListener('input', function () {
+      speed = parseInt(this.value);
+      clearInterval(intervalId);
+      if (isPlaying) {
+        let ms = 60000 / (speed * step_duration);
+        intervalId = setInterval(playStep, ms);
+      }
+    });
+
+    document.getElementById('pattern').addEventListener('input', function () {
+        processPattern(this.value);
+      //render();
+    });
+
+    window.addEventListener("load", (event) => {
+        // Se toma el valor del patron
+        var patter_value = document.getElementById('pattern').value;
+        processPattern(patter_value)
+    });
+
+    document.addEventListener("visibilitychange", () => {
+        if(document.hidden){
+            stop(true);
+        }
+    });
+  </script>
+  <script src="https://unpkg.com/cleave-zen"></script>
+</body>
+</html>
