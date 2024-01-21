@@ -1,7 +1,7 @@
 * {
     text-align: center;
     padding: 0.25em;
-    margin: 0.4em 0;
+    margin: 0.4em 0.1em;
     font-family: 'Cutive Mono', monospace;
 }
 
@@ -28,4 +28,10 @@ h1{
     margin: 0.5em 0;
     font-size: 1.1em;
     text-transform: uppercase;
+}
+
+@media (max-width: 412px), screen and (orientation: portrait) {
+    #pattern{
+        font-size: 1.75em;
+    }
 }

@@ -4,30 +4,28 @@ let intervalId = null;
 let speed = 110;
 let currentStep = 0;
 let pattern = '';
-let pattern_textarea = document.getElementById('pattern');
-let start_button = document.getElementById('start_button');
+let step_duration = 4;    //1= Negra, 2=Corchea, 4=Semi-corchea
 
-const step_duration = 4;    //1= Negra, 2=Corchea, 4=Semi-corchea
+const pattern_textarea  = document.getElementById('pattern');
+const start_button      = document.getElementById('start_button');
+const configuration_selector = document.getElementById('configuration');
 
-
-function stop(is_event_origin){
+function stop(){
     clearInterval(intervalId);
-    start_button.textContent= (is_event_origin ? "Comenzar":"Detener");
+    start_button.textContent= "Comenzar";
     isPlaying = false;
+    currentStep = 0;
 }
 
 function startStop() {
 
   if (isPlaying) {
-    stop(false);
+    stop();
   } else {
     start_button.textContent= (currentStep == 0 ? "Detener" : "Comenzar");
-
     intervalId = setInterval(playStep, 60000 / (speed * step_duration));
-    playStep(); // Play the first step immediately
-
+    playStep();
     isPlaying = true;
-
   }
 }
 
@@ -76,7 +74,7 @@ function processPattern(pattern_value){
     render();
 }
 
-//////////////
+/// EVENTOS
 document.getElementById('speed').addEventListener('input', function () {
   speed = parseInt(this.value);
   clearInterval(intervalId);
@@ -86,8 +84,13 @@ document.getElementById('speed').addEventListener('input', function () {
   }
 });
 
-document.getElementById('pattern').addEventListener('input', function () {
+pattern_textarea.addEventListener('input', function () {
     processPattern(this.value);
+});
+
+
+configuration_selector.addEventListener('change',function () {
+   step_duration = this.value[2];   // Se queda con el ultimo valor del value ("34X")
 });
 
 window.addEventListener("load", (event) => {
@@ -98,6 +101,6 @@ window.addEventListener("load", (event) => {
 
 document.addEventListener("visibilitychange", () => {
     if(document.hidden){
-        stop(true);
+        stop();
     }
 });
