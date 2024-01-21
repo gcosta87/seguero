@@ -1,0 +1,31 @@
+* {
+    text-align: center;
+    padding: 0.25em;
+    margin: 0.4em 0;
+    font-family: 'Cutive Mono', monospace;
+}
+
+h1{
+    margin:0;
+    padding:0;
+}
+#pattern{
+    margin: 0 0 0.4em 0;
+
+    font-size: 2.2em;
+    padding: 0.2em;
+    border: 4px dotted darkgrey ;
+    font-family: 'Cutive Mono', monospace;
+    /*text-decoration: greenyellow underline;*/
+    /*white-space: pre;*/
+    letter-spacing: 0.4em;
+    resize: none;
+    font-weight: bold;
+}
+
+#start_button{
+    padding: 0.3em;
+    margin: 0.5em 0;
+    font-size: 1.1em;
+    text-transform: uppercase;
+}
