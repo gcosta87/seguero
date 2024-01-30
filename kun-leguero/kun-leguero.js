@@ -127,29 +127,35 @@ function playStep() {
     }
 
     if(step.step_type !== STEP_TYPE_SILENCE){
-        step.audio.play();
+        playSound(step.sample_name);
     }
   currentStep = (currentStep + 1) % steps_data.length;
 }
 
-
+function playSound(soundFile) {
+    let audio = new Audio(PATH_SAMPLES+soundFile);
+    audio.play();
+}
 
 function render(){
     //Solo si el compás requiere renderizado...
     if(time_signature.group.render_required){
         let max_items =  time_signature.group.max_items;
         let with_separator =  time_signature.group.separator ? ' ':'';
-        let new_pattern_text = '';
-        for($i=0; $i<pattern.length; $i+=(max_items)){
-            new_pattern_text += (pattern.substr($i,max_items) + with_separator);
+        let new_pattern_array = [];
+        //Se deben quitar todo tipo de espacios en blanco
+        let pattern_without_spaces = pattern.replace(/ /g, '');
+
+        for($i=0; $i<pattern_without_spaces.length; $i+=(max_items)){
+            new_pattern_array.push(pattern_without_spaces.substr($i,max_items));
         }
 
-        pattern_textarea.value = with_separator ? new_pattern_text.substring(0,new_pattern_text.length-1): new_pattern_text;
+        pattern_textarea.value = new_pattern_array.join(with_separator);
     }
 }
 
 function processPattern(pattern_value,with_render){
-    pattern = pattern_value.replace(/[^AaPp_ \-]/g, ''); // Solo permite A, P o "-" y "_"
+    pattern = pattern_value.replace(/[^AaPp_ \-]/g, ''); // Solo permite A, P, Espacio en blanco, "-" y "_"
     if(with_render){render()};
 }
 
