@@ -63,11 +63,13 @@ let currentStep = 0;
 let pattern = '';
 let time_signature = TIME_SIGNATURE_NONE_2;
 let steps_data = [];
-
+let step_highlight = true;
 
 const pattern_textarea  = document.getElementById('pattern');
 const start_button      = document.getElementById('start_button');
 const configuration_selector = document.getElementById('configuration');
+const step_highlight_checkbox = document.getElementById('step_highlight')
+
 
 function stop(){
     clearInterval(intervalId);
@@ -115,12 +117,14 @@ function processPatternToStepsData(){
 }
 
 function playStep() {
-  let step = steps_data[currentStep];
-  selectStepInTextArea(step);
+    let step = steps_data[currentStep];
+    if(step_highlight_checkbox.checked){
+        selectStepInTextArea(step);
+    }
 
-  if(step.step_type !== STEP_TYPE_SILENCE){
-    playSound(step.sample_name);
-  }
+    if(step.step_type !== STEP_TYPE_SILENCE){
+        playSound(step.sample_name);
+    }
   currentStep = (currentStep + 1) % steps_data.length;
 }
 
@@ -132,7 +136,7 @@ function playSound(soundFile) {
 
 
 function render(){
-    //Solo si el compásrequiere renderizado...
+    //Solo si el compás requiere renderizado...
     if(time_signature.group.render_required){
         let max_items =  time_signature.group.max_items;
         let with_separator =  time_signature.group.separator ? ' ':'';
@@ -161,14 +165,13 @@ document.getElementById('speed').addEventListener('input', function () {
 });
 
 pattern_textarea.addEventListener('input', function () {
-    processPattern(this.value,false);
+    processPattern(this.value,true);
 });
 
 /**
  * Ante cambios en la configuracion (de Metricas), se deberá renderizar el patron correspondiente
  */
 configuration_selector.addEventListener('change',function () {
-    
     switch(this.value){
         case '0020':    time_signature = TIME_SIGNATURE_NONE_2;
                         break;
