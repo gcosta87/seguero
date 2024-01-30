@@ -12,21 +12,24 @@
 <body>
     <h1>El Kun Legüero</h1>
     <div id="app">
-        <textarea id="pattern" placeholder="A___p_a_P___" cols="12" rows="2" pattern="[aApP_\-]{0,48}" spellcheck="false" >A___p_a_P___</textarea>
+        <textarea id="pattern" placeholder="A_pAP_" cols="6" rows="2" pattern="[aApP_\-]+" spellcheck="false" >A_pAP_</textarea>
         <div>
             <input type="number" id="speed" min="30" max="220" step="5" value="110" title="Velocidad">
             <select title="Configuración" id="configuration">
                 <optgroup label="Sin metrica (texto libre)">
-                    <option value="002">Corcheas</option>
-                    <option value="004" selected="selected">Semicorcheas</option>
+                    <option value="0020" selected="selected">Corcheas (sin métrica)</option>
+                    <option value="0040">Semicorcheas (sin métrica)</option>
                 </optgroup>
                 <optgroup label="Métrica 3/4">
-                    <option value="342">3/4 con Corcheas</option>
-                    <option value="344">3/4 con Semicorcheas</option>
+                    <option value="3420">3/4 con Corcheas</option>
+                    <option value="3440">3/4 con Semicorcheas</option>
                 </optgroup>
                 <optgroup label="Métrica 6/8">
-                    <option value="682">6/8 con Corcheas</option>
-                    <option value="684">6/8 con Semicorcheas</option>
+                    <option value="6820">6/8 con Corcheas</option>
+                    <option value="6821">6/8 con Corcheas (subdivisión binaria)</option>
+
+                    <option value="6840">6/8 con Semicorcheas</option>
+                    <option value="6841">6/8 con Semicorcheas (subdivisión binaria)</option>
                 </optgroup>
             </select>
         </div>
