@@ -1,7 +1,9 @@
 // Constantes
 //
-// Compases: step_duration 1= Negra, 2=Corchea, 4=Semi-corchea
 
+const PATH_SAMPLES = 'kun-leguero/samples/';
+
+// Compases: step_duration 1= Negra, 2=Corchea, 4=Semi-corchea
 const TIME_SIGNATURE_NONE_2 = {step_duration: 2, text:{cols: 6, placeholder:'______'}, group:{render_required: false}};
 const TIME_SIGNATURE_NONE_4 = {step_duration: 4, text:{cols: 12, placeholder:'____________'}, group:{render_required: false}};
 
@@ -22,23 +24,27 @@ const STEP_CONFIGURATION = {
     'A':{
         name: 'Aro Acentuado',
         step_type: STEP_TYPE_ARO,
-        sample_name: 'aro_con_acento.ogg'
+        sample_name: 'aro_con_acento.ogg',
+        audio: new Audio(PATH_SAMPLES+'aro_con_acento.ogg')
     },
     'a': {
         name: 'Aro',
         step_type: STEP_TYPE_ARO,
-        sample_name: 'aro_sin_acento.ogg'
+        sample_name: 'aro_sin_acento.ogg',
+        audio: new Audio(PATH_SAMPLES+'aro_sin_acento.ogg')
     },
 
     'P': {
         name: 'Parche Acentuado',
         step_type: STEP_TYPE_PARCHE,
-        sample_name: 'parche_con_acento.ogg'
+        sample_name: 'parche_con_acento.ogg',
+        audio: new Audio(PATH_SAMPLES+'parche_con_acento.ogg')
     },
     'p': {
         name: 'Parche',
         step_type: STEP_TYPE_ARO,
-        sample_name: 'parche_sin_acento.ogg'
+        sample_name: 'parche_sin_acento.ogg',
+        audio: new Audio(PATH_SAMPLES+'parche_sin_acento.ogg')
     },
     // Silencios
     '_':{
@@ -52,8 +58,6 @@ const STEP_CONFIGURATION = {
 
 };
 const PROCESS_PATTERN_REGEX =  /[AaPp_\-]/gm;
-
-const PATH_SAMPLES = 'kun-leguero/samples/';
 
 // VARs Globales
 let isPlaying = false;
@@ -123,14 +127,9 @@ function playStep() {
     }
 
     if(step.step_type !== STEP_TYPE_SILENCE){
-        playSound(step.sample_name);
+        step.audio.play();
     }
   currentStep = (currentStep + 1) % steps_data.length;
-}
-
-function playSound(soundFile) {
-  const audio = new Audio(PATH_SAMPLES+soundFile);
-  audio.play();
 }
 
 
