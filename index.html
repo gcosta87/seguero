@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>El Kun Legüero</h1>
     <div id="app">
+        <h1>El Kun Legüero <sup id="version"></sup></h1>
         <textarea id="pattern" placeholder="A_pAP_" cols="6" rows="2" pattern="[aApP_\-]+" spellcheck="false" >A_pAP_</textarea>
         <div>
             <input type="number" id="speed" min="30" max="220" step="5" value="110" title="Velocidad">
@@ -38,6 +38,7 @@
         </div>
         <button onclick="startStop()" id="start_button">¡Dale!</button>
     </div>
+    <script src="http://unpkg.com/tone"></script>
     <script src="kun-leguero/kun-leguero.js"></script>
 </body>
 </html>
