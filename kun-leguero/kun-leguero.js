@@ -197,7 +197,7 @@ let kun_instance = {
                 "E4": "parche_sin_acento.ogg",
                 "F4": "parche_con_acento.ogg",
             },
-            baseUrl: "file:///home/gonzalo/Git/kun-leguero/kun-leguero/samples/",
+            baseUrl: PATH_SAMPLES,
             }).toDestination();
 
             Tone.loaded().then(() => {
