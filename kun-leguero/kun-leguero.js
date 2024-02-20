@@ -73,6 +73,9 @@ let kun_instance = {
     // Se ha reproducido al menos alguna vez?
     __has_played: false,
 
+    // Fue inicializado KunLeguero?
+    __initialized: false,
+
     // Velocidad
     speed: 110,
 
@@ -165,6 +168,7 @@ let kun_instance = {
             Tone.Transport.bpm.rampTo(kun_instance.speed,1);
         }
         else{
+            kun_instance.initialize();
             Tone.Transport.bpm.value = this.speed;
             this.setHasPlayed(true);
         }
@@ -176,7 +180,7 @@ let kun_instance = {
     isPlaying(){
         return this.__is_playing;
     },
-    
+
     setPlaying(value){
         this.__is_playing = value;
     },
@@ -189,27 +193,37 @@ let kun_instance = {
         this.__has_played = value;
     },
 
+    isInitialized(){
+        return this.__initialized;
+    },
+
+    setInitialized(value){
+        this.__initialized = value;
+    },
+
     initialize: function(){
-        this.__tonejs.sampler = new Tone.Sampler({
-            urls: {
-                "C4": "aro_sin_acento.ogg",
-                "D4": "aro_con_acento.ogg",
-                "E4": "parche_sin_acento.ogg",
-                "F4": "parche_con_acento.ogg",
-            },
-            baseUrl: PATH_SAMPLES,
-            }).toDestination();
+        if(!this.isInitialized()){
+            this.__tonejs.sampler = new Tone.Sampler({
+                urls: {
+                    "C4": "aro_sin_acento.ogg",
+                    "D4": "aro_con_acento.ogg",
+                    "E4": "parche_sin_acento.ogg",
+                    "F4": "parche_con_acento.ogg",
+                },
+                baseUrl: PATH_SAMPLES,
+                }).toDestination();
+                Tone.loaded().then(() => {
 
-            Tone.loaded().then(() => {
+                    // start/stop the oscillator every quarter note
+                    Tone.Transport.scheduleRepeat(time => {
+                        playStep(time);
+                    }, kun_instance.time_signature.musical_note.note_english);
 
-                // start/stop the oscillator every quarter note
-                Tone.Transport.scheduleRepeat(time => {
-                    playStep(time);
-                }, kun_instance.time_signature.musical_note.note_english);
-
-                kun_instance.logMessage('Inicializado sampler de ToneJS');
-            });
-            kun_instance.logMessage('El Kun ha sido inicializado!.');
+                    kun_instance.logMessage('Inicializado sampler de ToneJS');
+                });
+                this.setInitialized(true);
+                this.logMessage('El Kun ha sido inicializado!.');
+            }
     },
 
     logMessage(object){
@@ -235,6 +249,7 @@ function startStop() {
   if (kun_instance.isPlaying()) {
     stop();
   } else {
+    
     start_button.textContent= (kun_instance.isFirstStep() ? "Detener" : "Comenzar");
     render();
     processPatternToStepsData();
