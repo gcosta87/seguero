@@ -104,7 +104,7 @@ let kun_instance = {
     
     development:{
         version: {
-            number: "0.5.8",
+            number: "0.5.9",
             cicle: "Pre-Alpha", //Pre-Alpha, Alpha, Beta, RC, Stable
             toString(){
                 //return this.number+' ['+(this.cicle === 'Stable' ?  'Estable' : 'Inestable') +']';
@@ -155,11 +155,13 @@ let kun_instance = {
 
 
     stop: function(){
-        this.__is_playing = false;
-        this.__steps.current = 0;
+        if(this.isPlaying()){
+            this.setPlaying(false);
+            this.__steps.current = 0;
 
-        Tone.Transport.stop();
-        this.logMessage('Kun Leguero detenido (#stop)');
+            Tone.Transport.stop();
+            this.logMessage('Kun Leguero detenido (#stop)');
+        }
     },
 
 
@@ -168,7 +170,7 @@ let kun_instance = {
             Tone.Transport.bpm.rampTo(kun_instance.speed,1);
         }
         else{
-            kun_instance.initialize();
+            //kun_instance.initialize();
             Tone.Transport.bpm.value = this.speed;
             this.setHasPlayed(true);
         }
@@ -246,10 +248,10 @@ function stop(){
 }
 
 function startStop() {
+    Tone.start();
   if (kun_instance.isPlaying()) {
     stop();
   } else {
-    
     start_button.textContent= (kun_instance.isFirstStep() ? "Detener" : "Comenzar");
     render();
     processPatternToStepsData();
@@ -315,6 +317,11 @@ function processPattern(pattern_value,with_render){
 }
 
 /// EVENTOS
+start_button.addEventListener('click', async () => {
+    await Tone.start();
+    kun_instance.initialize();
+});
+
 document.getElementById('speed').addEventListener('input', function () {
   kun_instance.speed = parseInt(this.value);
   if (kun_instance.isPlaying()) {
@@ -366,8 +373,6 @@ step_highlight_checkbox.addEventListener('change',function () {
 window.addEventListener("load", (event) => {
     // Se toma el valor del patron
     processPattern(pattern_textarea.value, true);
-
-    kun_instance.initialize();
     document.getElementById('version').innerHTML= kun_instance.development.version;
 });
 
