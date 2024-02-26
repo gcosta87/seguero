@@ -64,7 +64,7 @@ const STEP_CONFIGURATION = {
 const PROCESS_PATTERN_REGEX =  /[AaPp_\-]/gm;
 
 // VARs Globales
-let kun_instance = {
+const kun_instance = {
 
     //VARs
     // Se esta reproducioendo?
@@ -80,7 +80,7 @@ let kun_instance = {
     speed: 110,
 
     // Patron de texto
-    pattern: '',
+    __pattern: '',
 
     // configuracion del compas
     time_signature: TIME_SIGNATURE_NONE_2,
@@ -104,7 +104,7 @@ let kun_instance = {
     
     development:{
         version: {
-            number: "0.5.9",
+            number: "0.6.1",
             cicle: "Pre-Alpha", //Pre-Alpha, Alpha, Beta, RC, Stable
             toString(){
                 //return this.number+' ['+(this.cicle === 'Stable' ?  'Estable' : 'Inestable') +']';
@@ -170,10 +170,14 @@ let kun_instance = {
             Tone.Transport.bpm.rampTo(kun_instance.speed,1);
         }
         else{
-            //kun_instance.initialize();
             Tone.Transport.bpm.value = this.speed;
             this.setHasPlayed(true);
         }
+        Tone.Transport.cancel(0);
+        // start/stop the oscillator every quarter note
+        Tone.Transport.scheduleRepeat(time => {
+            playStep(time);
+        }, kun_instance.time_signature.musical_note.note_english);
         Tone.Transport.start();
         this.setPlaying(true);
         this.logMessage('Kun Leguero reproduciendo (#start)');
@@ -214,18 +218,73 @@ let kun_instance = {
                 },
                 baseUrl: PATH_SAMPLES,
                 }).toDestination();
+
                 Tone.loaded().then(() => {
 
-                    // start/stop the oscillator every quarter note
-                    Tone.Transport.scheduleRepeat(time => {
-                        playStep(time);
-                    }, kun_instance.time_signature.musical_note.note_english);
+  
 
                     kun_instance.logMessage('Inicializado sampler de ToneJS');
                 });
+
                 this.setInitialized(true);
                 this.logMessage('El Kun ha sido inicializado!.');
             }
+    },
+
+    // Procesamiento de texto (Patron ingresado, Renderizado al USR,...)
+
+
+    setPattern: function(input_text){
+        this.__pattern = input_text.replace(/[^AaPp_ \-]/g, ''); // Solo permite A, P, Espacio en blanco, "-" y "_"
+    },
+
+    getPattern: function(){
+        return this.__pattern;
+    },
+
+    /**
+     * Procesa el texto del textarea a una estructura que tiene todo listo!.
+     */
+    processPatternToStepsData: function(input_text){
+        this.clearStepsData();
+        let m;
+
+        while ((m = PROCESS_PATTERN_REGEX.exec(input_text)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (m.index === PROCESS_PATTERN_REGEX.lastIndex) {
+                PROCESS_PATTERN_REGEX.lastIndex++;
+            }
+            let new_step = {...STEP_CONFIGURATION[m]};  // Clonado
+            new_step.position = m.index;
+
+            this.addStepData(new_step);
+        }
+        this.logMessage(kun_instance.__steps);
+    },
+
+
+    /**
+     * 
+     * @returns string | null
+     */
+    render: function(){
+        //Solo si el compás requiere renderizado...
+        if(this.time_signature.group.render_required){
+            let max_items =  this.time_signature.group.max_items;
+            let with_separator =  this.time_signature.group.separator ? ' ':'';
+            let new_pattern_array = [];
+            //Se deben quitar todo tipo de espacios en blanco
+            let pattern_without_spaces = this.getPattern().replace(/ /g, '');
+
+            for($i=0; $i<pattern_without_spaces.length; $i+=(max_items)){
+                new_pattern_array.push(pattern_without_spaces.substr($i,max_items));
+            }
+
+            return new_pattern_array.join(with_separator);
+        
+        }
+
+        return null;
     },
 
     logMessage(object){
@@ -235,149 +294,3 @@ let kun_instance = {
     }
 
 }
-
-const pattern_textarea  = document.getElementById('pattern');
-const start_button      = document.getElementById('start_button');
-const configuration_selector = document.getElementById('configuration');
-const step_highlight_checkbox = document.getElementById('step_highlight')
-
-
-function stop(){
-    start_button.textContent= "Comenzar";
-    kun_instance.stop();
-}
-
-function startStop() {
-    Tone.start();
-  if (kun_instance.isPlaying()) {
-    stop();
-  } else {
-    start_button.textContent= (kun_instance.isFirstStep() ? "Detener" : "Comenzar");
-    render();
-    processPatternToStepsData();
-
-    kun_instance.start();
-  }
-}
-
-function selectStepInTextArea(step){
-    pattern_textarea.focus();
-    pattern_textarea.setSelectionRange(step.position, (step.position + 1));
-}
-
-/**
- * Procesa el texto del textarea a una estructura que tiene todo listo!.
- */
-function processPatternToStepsData(){
-    kun_instance.clearStepsData();
-    let m;
-
-    while ((m = PROCESS_PATTERN_REGEX.exec(pattern_textarea.value)) !== null) {
-        // This is necessary to avoid infinite loops with zero-width matches
-        if (m.index === PROCESS_PATTERN_REGEX.lastIndex) {
-            PROCESS_PATTERN_REGEX.lastIndex++;
-        }
-        let new_step = {...STEP_CONFIGURATION[m]};  // Clonado
-        new_step.position = m.index;
-
-        kun_instance.addStepData(new_step);
-    }
-    kun_instance.logMessage(kun_instance.__steps);
-}
-
-function playStep(time) {
-    let step = kun_instance.getNextStep();
-    if(kun_instance.config.step.highlight){
-        selectStepInTextArea(step);
-    }
-
-    kun_instance.executeStep(step,time);
-}
-
-function render(){
-    //Solo si el compás requiere renderizado...
-    if(kun_instance.time_signature.group.render_required){
-        let max_items =  kun_instance.time_signature.group.max_items;
-        let with_separator =  kun_instance.time_signature.group.separator ? ' ':'';
-        let new_pattern_array = [];
-        //Se deben quitar todo tipo de espacios en blanco
-        let pattern_without_spaces = kun_instance.pattern.replace(/ /g, '');
-
-        for($i=0; $i<pattern_without_spaces.length; $i+=(max_items)){
-            new_pattern_array.push(pattern_without_spaces.substr($i,max_items));
-        }
-
-        pattern_textarea.value = new_pattern_array.join(with_separator);
-    }
-}
-
-function processPattern(pattern_value,with_render){
-    kun_instance.pattern = pattern_value.replace(/[^AaPp_ \-]/g, ''); // Solo permite A, P, Espacio en blanco, "-" y "_"
-    if(with_render){render()};
-}
-
-/// EVENTOS
-start_button.addEventListener('click', async () => {
-    await Tone.start();
-    kun_instance.initialize();
-});
-
-document.getElementById('speed').addEventListener('input', function () {
-  kun_instance.speed = parseInt(this.value);
-  if (kun_instance.isPlaying()) {
-    Tone.Transport.bpm.rampTo(kun_instance.speed,1);
-  }
-});
-
-pattern_textarea.addEventListener('input', function () {
-    processPattern(this.value,true);
-});
-
-/**
- * Ante cambios en la configuracion (de Metricas), se deberá renderizar el patron correspondiente
- */
-configuration_selector.addEventListener('change',function () {
-    switch(this.value){
-        case '0020':    kun_instance.time_signature = TIME_SIGNATURE_NONE_2;
-                        break;
-        case '0040':    kun_instance.time_signature = TIME_SIGNATURE_NONE_4;
-                        break;
-        case '3420':    kun_instance.time_signature = TIME_SIGNATURE_3_4_2;
-                        break;
-        case '3440':    kun_instance.time_signature = TIME_SIGNATURE_3_4_4;
-                        break;
-        case '6820':    kun_instance.time_signature = TIME_SIGNATURE_6_8_2;
-                        break;
-        case '6840':    kun_instance.time_signature = TIME_SIGNATURE_6_8_4;
-                        break;
-        case '6821':    kun_instance.time_signature = TIME_SIGNATURE_6_8_2_BINARY;
-                        break;
-        case '6841':    kun_instance.time_signature = TIME_SIGNATURE_6_8_4_BINARY;
-                        break;
-
-
-        default:    //NO deberia darse...
-    }
-
-    pattern_textarea.cols = kun_instance.time_signature.text.cols;
-    pattern_textarea.placeholder = kun_instance.time_signature.text.placeholder;
-
-    processPattern(pattern_textarea.value,true)
-
-});
-
-step_highlight_checkbox.addEventListener('change',function () {
-    kun_instance.config.step.highlight = this.checked;
-});
-
-window.addEventListener("load", (event) => {
-    // Se toma el valor del patron
-    processPattern(pattern_textarea.value, true);
-    document.getElementById('version').innerHTML= kun_instance.development.version;
-});
-
-document.addEventListener("visibilitychange", () => {
-    if(document.hidden){
-        stop();
-    }
-});
