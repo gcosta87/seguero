@@ -3,10 +3,10 @@
 
 const PATH_SAMPLES = 'kun-leguero/samples/';
 
-// Compases y figuras/notas musicales: step_duration 1= Negra, 2=Corchea, 4=Semi-corchea
-const MUSICAL_NOTE_1 = {name: 'Negra', step_duration: 1, note_english: '4n'};
-const MUSICAL_NOTE_2 = {name: 'Corchea', step_duration: 2, note_english: '8n'};
-const MUSICAL_NOTE_4 = {name: 'Semicorchea', step_duration: 4,  note_english: '16n'};
+// Compases y figuras/notas musicales
+const MUSICAL_NOTE_1 = {name: 'Negra', note_english: '4n'};
+const MUSICAL_NOTE_2 = {name: 'Corchea', note_english: '8n'};
+const MUSICAL_NOTE_4 = {name: 'Semicorchea',  note_english: '16n'};
 
 const TIME_SIGNATURE_NONE_2 = {musical_note: MUSICAL_NOTE_2, text:{cols: 6, placeholder:'______'}, group:{render_required: false}};
 const TIME_SIGNATURE_NONE_4 = {musical_note: MUSICAL_NOTE_4, text:{cols: 12, placeholder:'____________'}, group:{render_required: false}};

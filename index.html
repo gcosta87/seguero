@@ -1,45 +1,242 @@
 <!DOCTYPE html>
-<html lang="es">
+<html class="no-js" lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>El Kun Legüero - Caja rítmica de folklore argentino</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="kun-leguero/css/style.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
+
+    <!--- basic page needs
+    ================================================== -->
+    <meta charset="utf-8">
+    <title>El Kun Legüero - Caja rítmica de folklore argentino</title>
+    <meta name="description" content="Caja rítmica de folklore argentino online basada en texto">
+    <meta name="author" content="Gonzalo Gabriel Costa">
+
+    <!-- mobile specific metas
+    ================================================== -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="web/css/base.css">
+    <link rel="stylesheet" href="web/css/vendor.css">
+    <link rel="stylesheet" href="web/css/main.css">
+
+    <!-- script
+    ================================================== -->
+    <script src="web/js/modernizr.js"></script>
+    <script src="web/js/pace.min.js"></script>
+
+    <!-- favicons
+    ================================================== -->
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+    <link rel="icon" href="favicon.png" type="image/png">
+
+
+    <!-- Extras añadidos por Kun -->
+    <!-- <link href="kun-leguero/css/style.css" rel="stylesheet"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    <div id="app">
-        <h1>El Kun Legüero <sup id="version"></sup></h1>
-        <textarea id="pattern" placeholder="A_pAP_" cols="6" rows="2" pattern="[aApP_\-]+" spellcheck="false" >A_pAP_</textarea>
-        <div>
-            <input type="number" id="speed" min="30" max="220" step="5" value="110" title="Velocidad">
-            <select title="Configuración" id="configuration">
-                <optgroup label="Sin metrica (texto libre)">
-                    <option value="0020" selected="selected">Corcheas (sin métrica)</option>
-                    <option value="0040">Semicorcheas (sin métrica)</option>
-                </optgroup>
-                <optgroup label="Métrica 3/4">
-                    <option value="3420">3/4 con Corcheas</option>
-                    <option value="3440">3/4 con Semicorcheas</option>
-                </optgroup>
-                <optgroup label="Métrica 6/8">
-                    <option value="6820">6/8 con Corcheas</option>
-                    <option value="6821">6/8 con Corcheas (subdivisión binaria)</option>
 
-                    <option value="6840">6/8 con Semicorcheas</option>
-                    <option value="6841">6/8 con Semicorcheas (subdivisión binaria)</option>
-                </optgroup>
-            </select>
+    <!-- home
+    ================================================== -->
+    <main class="s-home s-home--static">
 
-            <input type="checkbox" id="step_highlight" checked="true" title="Resaltar la figura que se está ejecutando"/>
-            <label for="step_highlight">Resaltar</label>
+        <div class="overlay"></div>
+
+        <div class="home-content">
+
+            <div class="home-logo">
+                <a href="/">El Kun Legüero</a>
+            </div>
+
+            <div class="row home-content__main">
+
+                <div class="col-nine home-content__text">
+                    <h3>Secuencia</h3>
+
+                    <div class="home-content__subscribe">
+                        <form id="mc-form" class="group" novalidate="true">
+                            <input type="button" name="subscribe" value="Dale"/>
+                            <textarea id="pattern" placeholder="A_pAP_" cols="6" rows="2" pattern="[aApP_\-]+" spellcheck="false" >A_pAP_</textarea>
+                            <div class="app">
+                                <div>
+                                    <label for="speed" class="input">Velocidad</label>
+                                    <input type="number" id="speed" min="30" max="220" step="5" value="110" title="Velocidad">
+                                </div>
+                                <div>
+                                    <label for="step_highlight" class="input">Resaltar</label>
+                                    <input type="checkbox" id="step_highlight" checked="true" title="Resaltar la figura que se está ejecutando"/>
+                                </div>
+
+                                <label for="configuration">Configuración</label>
+                                <select title="Configuración" id="configuration">
+                                    <optgroup label="Sin metrica (texto libre)">
+                                        <option value="0020" selected="selected">Corcheas (sin métrica)</option>
+                                        <option value="0040">Semicorcheas (sin métrica)</option>
+                                    </optgroup>
+                                    <optgroup label="Métrica 3/4">
+                                        <option value="3420">3/4 con Corcheas</option>
+                                        <option value="3440">3/4 con Semicorcheas</option>
+                                    </optgroup>
+                                    <optgroup label="Métrica 6/8">
+                                        <option value="6820">6/8 con Corcheas</option>
+                                        <option value="6821">6/8 con Corcheas (subdivisión binaria)</option>
+                    
+                                        <option value="6840">6/8 con Semicorcheas</option>
+                                        <option value="6841">6/8 con Semicorcheas (subdivisión binaria)</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>  <!-- end home-content__text -->
+
+                <div class="col-three home-content__counter ">
+                    <h3>Data</h3>
+
+                    <div class="home-content__clock">
+                        <div class="top">
+                            <div class="time days">
+                                6
+                                <span>Tiempo</span>
+                            </div>
+                        </div>    
+                        <div class="time hours" title="Numero de Compás">
+                            1
+                            <span>C</span>
+                        </div>
+                        <div class="time minutes" title="Número de Figura">
+                            1
+                            <span>Fig.</span>
+                        </div>
+                        <!-- 
+                        <div class="time seconds">
+                            30
+                            <span>S</span>
+                        </div>
+                        -->
+                    </div>  <!-- end home-content__clock -->
+                </div>  <!-- end home-content__counter -->
+
+            </div>  <!-- end home-content__main -->
+
+            <div class="row home-copyright">
+                <span>Copyright Count 2024</span> 
+                <span>Design by <a href="https://www.styleshout.com/">styleshout</a></span>
+            </div> <!-- end home-copyright -->
+
+            <div class="home-content__line"></div>
+
+        </div> <!-- end home-content -->
+
+    </main> <!-- end s-home -->
+
+    <!-- info
+    ================================================== -->
+    <a class="info-toggle" href="#0">
+        <span class="info-menu-icon"></span>
+    </a>
+
+    <div class="s-info">
+
+        <div class="row info-wrapper">
+
+            <div class="col-seven tab-full info-main">
+                <h1>We are Count. We make awesome stuff.</h1>
+                <p>
+                Quisque velit nisi, pretium ut lacinia in, elementum id enim. Mauris blandit aliquet elit, 
+                eget tincidunt nibh pulvinar a. Quisque velit nisi, pretium ut lacinia in, elementum id enim. 
+                Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; 
+                Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.
+                </p>
+
+                <p>
+                Officiis nostrum adipisci minima. Enim tenetur animi ipsum a itaque temporibus necessitatibus. 
+                Dolores ad perspiciatis. Voluptatem et molestiae adipisci laboriosam assumenda. Deleniti vero 
+                labore eos repudiandae. Vel commodi tenetur ex quia. Quisque velit nisi, pretium ut lacinia in, 
+                elementum id enim. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere.
+                </p>
+            </div>
+
+            <div class="col-four tab-full pull-right info-contact">
+
+                <div class="info-block">
+                    <h3>Start A Conversation</h3>
+                    <p>
+                        <a href="mailto:#0" class="info-email">mailus@ourwebsite.com</a><br>
+                        <a href="tel:+18587338912" class="'info-phone">+1.858.733.8912</a>
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>Visit Our Office</h3>
+                    
+                    <p class="info-address">
+                        1600 Amphitheatre Parkway<br>
+                        Mountain View, CA<br>
+                        94043 US
+                    </p>
+                </div>
+
+                <div class="info-block">
+                    <h3>Find Us On</h3>
+                    
+                    <ul class="info-social">
+                        <li>
+                            <a href="#0"><i class="fab fa-facebook" aria-hidden="true"></i>
+                            <span>Facebook</span></a>
+                        </li>
+                        <li>
+                            <a href="#0"><i class="fab fa-twitter" aria-hidden="true"></i>
+                            <span>Twiiter</span></a>
+                        </li>
+                        <li>
+                            <a href="#0"><i class="fab fa-instagram" aria-hidden="true"></i>
+                            <span>Instagram</span></a>
+                        </li>
+                        <li>
+                            <a href="#0"><i class="fab fa-behance" aria-hidden="true"></i>
+                            <span>Behance</span></a>
+                        </li>
+                        <li>
+                            <a href="#0"><i class="fab fa-dribbble" aria-hidden="true"></i>
+                            <span>Dribbble</span></a>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>  <!-- end info contact -->
+
+        </div>  <!-- end info wrapper -->
+
+    </div> <!-- end s-info -->
+
+
+    <!-- preloader
+    ================================================== -->
+    <div id="preloader">
+        <div id="loader">
+            <div class="line-scale-pulse-out">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
         </div>
-        <button onclick="startStop()" id="start_button">¡Dale!</button>
     </div>
+
     <script src="https://unpkg.com/tone"></script>
     <script src="kun-leguero/kun-leguero.js"></script>
+
+    <!-- Java Script
+    ================================================== -->
+    <script src="web/js/jquery-3.2.1.min.js"></script>
+    <script src="web/js/plugins.js"></script>
+    <script src="web/js/main.js"></script>
     <script src="web/js/kun_leguero_integration.js"></script>
 </body>
 </html>
